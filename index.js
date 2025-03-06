@@ -50,7 +50,12 @@ const HUN_CHARS = {
   ã: 'án'
 };
 
+var TimeBox = false;
+var Timeout = null;
+
 input.addEventListener('input', event => {
+  clearTimeout(Timeout);
+  Timeout = setTimeout(() => {TimeBox = false;}, 1000);
   if (event.data && input.value.length > 1) {
    let fullValue = input.value;
    let lastChar = fullValue[fullValue.length - 2];
@@ -58,11 +63,12 @@ input.addEventListener('input', event => {
    lastChar = lastChar.toLowerCase();
    const lastSimpleChar = getSimpleChar(lastChar);
    const newSimpleChar = event.data.toLowerCase();
-   if (newSimpleChar === lastSimpleChar && !!CHARS[newSimpleChar]) {
+   if (TimeBox && newSimpleChar === lastSimpleChar && !!CHARS[newSimpleChar]) {
 	 fullValue = fullValue.substring(0, fullValue.length - 2) + getChar(newSimpleChar, lastChar, isUpperCase);
      input.value = fullValue;	  
    }
   }
+  TimeBox = true;
   updateOrigi();
   updateHun();
 });
@@ -92,6 +98,9 @@ function updateOrigi() {
   for(let i = 0; i < input.value.length; i++) {
 	const simpleChar = getSimpleChar(input.value[i].toLowerCase());
 	if(!!CHARS[simpleChar]) {
+	  if (i > 0 && simpleChar === getSimpleChar(input.value[i-1].toLowerCase())) {
+	    content += '*';
+	  }
 	  isUpperCase = input.value[i] === input.value[i].toUpperCase();
 	  const num = CHARS[simpleChar].indexOf(input.value[i].toLowerCase()) + 1;
 	  content += isUpperCase ? simpleChar.repeat(num).toUpperCase() : simpleChar.repeat(num);
@@ -119,7 +128,8 @@ function updateNew() {
 	  }
 	  count = count % CHARS[simpleChar].length;
 	  content += isUpperCase ? CHARS[simpleChar][count].toUpperCase() : CHARS[simpleChar][count];
-	} else {
+	} else if (simpleChar !== '*'){
+		console.log(simpleChar);
 	  content += inputOrigi.value[i];
 	}
   }
