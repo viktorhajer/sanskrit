@@ -1,6 +1,7 @@
 const input = document.getElementById('input-field');
 const inputOrigi = document.getElementById('input-field-origi');
 const inputHun = document.getElementById('input-field-hun');
+const CHARACTER_TIMEOUT = 1000;
 
 const CHARS = {
   a: ['a', 'ā'],
@@ -55,7 +56,7 @@ var Timeout = null;
 
 input.addEventListener('input', event => {
   clearTimeout(Timeout);
-  Timeout = setTimeout(() => {TimeBox = false;}, 1000);
+  Timeout = setTimeout(() => {TimeBox = false;}, CHARACTER_TIMEOUT);
   if (event.data && input.value.length > 1) {
    let fullValue = input.value;
    let lastChar = fullValue[fullValue.length - 2];
